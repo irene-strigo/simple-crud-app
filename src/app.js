@@ -10,29 +10,29 @@ let DB = []
 
 server.on('request', async (request, response) => {
 
-    if (request.method === 'GET'&& request.url === '/users') {
+    if (request.method === 'GET'&& request.url === '/app/users'|| '/app/users/') {
         let data = "";
         request.on("data", chunk => {
             data += chunk;
         });
-console.log(data)
+
         response.statusCode = 200;
-        //response.setHeader('Content-Type', 'application/json')
+
         response.end(JSON.stringify(DB));
     }
 
     if (request.method === 'GET'&& request.url.match('|users/[0-9]+$|')) {
-console.log('its userid request')
+
        let reqId = request.url.split('/').pop()
-        console.log(`ReqId: ${reqId}`);
+
    let result = DB.find((data)=>data.id === reqId)
-       //console.log('result of searching', result)
+
         response.statusCode = 200
-        //response.setHeader('Content-Type', 'application/json')
+
         response.end(JSON.stringify(result));
     }
 
-    if (request.method === 'POST'&& request.url === '/users') {
+    if (request.method === 'POST'&& request.url === '/app/users'|| '/app/users/') {
         try {
             let json = "";
             for await (const chunk of request) {
@@ -46,7 +46,7 @@ console.log('its userid request')
         } catch (err) {
             console.log(err)
         }
-        response.setHeader('Content-Type', 'application/json')
+
         response.end(JSON.stringify(DB));
     }
 
@@ -55,9 +55,9 @@ console.log('its userid request')
         let reqId = request.url.split('/').pop()
         console.log(`ReqId: ${reqId}`);
       DB =  DB.filter((data)=>data.id != reqId)
-        console.log('DB',DB)
+
         response.statusCode = 204
-        response.setHeader('Content-Type', 'application/json')
+
         response.end(JSON.stringify(DB));
     }
 
@@ -69,10 +69,10 @@ console.log('its userid request')
             }
             const resultRequest = JSON.parse(json);
             let reqId = request.url.split('/').pop()
-            console.log('updateData',resultRequest)
+
 
            let target= DB.find((data)=>data.id === reqId)
-            console.log(target)
+
            target.name = resultRequest.name;
             target.age = resultRequest.age;
             target.hobbies = resultRequest.hobbies;
@@ -81,7 +81,7 @@ console.log('its userid request')
         } catch (err) {
             console.log(err)
         }
-        response.setHeader('Content-Type', 'application/json')
+
         response.end(JSON.stringify(DB));
     }
 
